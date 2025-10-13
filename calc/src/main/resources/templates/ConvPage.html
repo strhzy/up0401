@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Конвертер</title>
+</head>
+<body>
+    <nav>
+        <a href="/">Калькулятор</a>
+    </nav>
+    <h2>Конвертер</h2>
+    <div>
+        <form action="/convert" method="POST" style="display: flex; align-items: center; gap: 10px;">
+            <div>
+                <input type="number" step="any" id="num" name="num" required>
+            </div>
+
+            <div>
+                <select id="currency" name="currency" required style="height: 38px;">
+                    <option value="usd">Доллар</option>
+                    <option value="eur">Евро</option>
+                </select>
+            </div>
+
+            <button type="submit" style="height: 38px;">Конвертировать</button>
+
+            <div th:if="${result}" class="result" style="padding: 8px; background: #f5f5f5; border-radius: 4px;">
+                <span th:text="${result}"></span>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
