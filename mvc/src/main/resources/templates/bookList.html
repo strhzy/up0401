@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Книги</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+<h1>Книги</h1>
+<form method="get" th:action="@{/books/}">
+    <label>Поиск (по всем полям): <input type="text" name="q" th:value="${param.q}" placeholder="Введите текст для поиска"/></label>
+    <label>Сортировка:
+        <select name="sort">
+            <option th:value="'id:asc'" th:selected="${param.sort == 'id:asc'}">ID ↑</option>
+            <option th:value="'id:desc'" th:selected="${param.sort == 'id:desc'}">ID ↓</option>
+            <option th:value="'title:asc'" th:selected="${param.sort == 'title:asc'}">Название ↑</option>
+            <option th:value="'title:desc'" th:selected="${param.sort == 'title:desc'}">Название ↓</option>
+            <option th:value="'author_id:asc'" th:selected="${param.sort == 'author_id:asc'}">ID автора ↑</option>
+            <option th:value="'author_id:desc'" th:selected="${param.sort == 'author_id:desc'}">ID автора ↓</option>
+            <option th:value="'pageCount:asc'" th:selected="${param.sort == 'pageCount:asc'}">Количество страниц ↑</option>
+            <option th:value="'pageCount:desc'" th:selected="${param.sort == 'pageCount:desc'}">Количество страниц ↓</option>
+        </select>
+    </label>
+    <button type="submit">Поиск</button>
+    <a th:href="@{/books/add}">Добавить книгу</a>
+</form>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>ID автора</th>
+        <th>Количество страниц</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="b : ${books}">
+        <td th:text="${b.id}">1</td>
+        <td th:text="${b.title}">Название</td>
+        <td th:text="${b.author_id}">1</td>
+        <td th:text="${b.pageCount}">100</td>
+        <td>
+            <a th:href="@{'/books/edit/' + ${b.id}}">Редактировать</a>
+            <form th:action="@{/books/delete/{id}(id=${b.id})}" method="post" style="display:inline">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
