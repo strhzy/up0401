@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/authors")
-@Validated
+@Valid
 public class AuthorController {
     private final List<Author> authors = new ArrayList<>();
     private final AtomicLong idCounter = new AtomicLong(1);
@@ -24,7 +24,6 @@ public class AuthorController {
     @GetMapping("/")
     public String getAllAuthors(
             @RequestParam(required = false) String q,
-            @RequestParam(required = false) String filter,
             @RequestParam(required = false) String sort,
             Model model) {
         List<Author> result = new ArrayList<>(authors);
@@ -35,50 +34,12 @@ public class AuthorController {
                 if (a.getName() != null && a.getName().toLowerCase().contains(qq)) return true;
                 if (a.getSurname() != null && a.getSurname().toLowerCase().contains(qq)) return true;
                 if (a.getLastname() != null && a.getLastname().toLowerCase().contains(qq)) return true;
-                // если запрос — число, сравним по id
                 try {
                     Long id = Long.parseLong(qq);
                     if (Objects.equals(a.getId(), id)) return true;
                 } catch (NumberFormatException ignored) {
                 }
                 return false;
-            }).collect(Collectors.toList());
-        } else if (filter != null && !filter.trim().isEmpty()) {
-            Map<String, String> filters = Arrays.stream(filter.split(","))
-                    .map(String::trim)
-                    .map(s -> s.split(":", 2))
-                    .filter(arr -> arr.length == 2)
-                    .collect(Collectors.toMap(arr -> arr[0].trim(), arr -> arr[1].trim()));
-
-            result = result.stream().filter(a -> {
-                for (Map.Entry<String, String> e : filters.entrySet()) {
-                    String key = e.getKey();
-                    String val = e.getValue();
-                    boolean match;
-                    switch (key) {
-                        case "name":
-                            match = a.getName() != null && a.getName().toLowerCase().contains(val.toLowerCase());
-                            break;
-                        case "surname":
-                            match = a.getSurname() != null && a.getSurname().toLowerCase().contains(val.toLowerCase());
-                            break;
-                        case "lastname":
-                            match = a.getLastname() != null && a.getLastname().toLowerCase().contains(val.toLowerCase());
-                            break;
-                        case "id":
-                            try {
-                                Long id = Long.parseLong(val);
-                                match = Objects.equals(a.getId(), id);
-                            } catch (NumberFormatException ex) {
-                                match = false;
-                            }
-                            break;
-                        default:
-                            match = true;
-                    }
-                    if (!match) return false;
-                }
-                return true;
             }).collect(Collectors.toList());
         }
 

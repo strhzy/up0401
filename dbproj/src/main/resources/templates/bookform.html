@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Форма книги</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">Библиотека</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" th:href="@{/books}">Книги</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/authors}">Авторы</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/genres}">Жанры</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/countries}">Страны</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/years}">Года</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 th:text="${book.id} == 0 ? 'Добавить книгу' : 'Редактировать книгу'">Форма книги</h1>
+
+    <form th:if="${book.id} == 0" th:action="@{/books/add}" method="post" th:object="${book}">
+        <div class="mb-3">
+            <label class="form-label">Название</label>
+            <input type="text" th:field="*{title}" class="form-control" />
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Страниц</label>
+            <input type="number" th:field="*{pages}" class="form-control" />
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('pages')}" th:errors="*{pages}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Автор</label>
+            <div class="d-flex align-items-center">
+                <select th:field="*{author.id}" class="form-select">
+                    <option th:each="a : ${authors}" th:value="${a.id}" th:text="${a.surname + ' ' + a.name}">Автор</option>
+                </select>
+                <a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/authors/add}">Добавить автора</a>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Жанр</label>
+            <div class="d-flex align-items-center">
+                <select th:field="*{genre.id}" class="form-select">
+                    <option th:each="g : ${genres}" th:value="${g.id}" th:text="${g.name}">Жанр</option>
+                </select>
+                <a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/genres/add}">Добавить жанр</a>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Год</label>
+            <div class="d-flex align-items-center">
+                <select th:field="*{year.id}" class="form-select">
+                    <option th:each="y : ${years}" th:value="${y.id}" th:text="${y.value}">Год</option>
+                </select>
+                <a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/years/add}">Добавить год</a>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Страна</label>
+            <div class="d-flex align-items-center">
+                <select th:field="*{country.id}" class="form-select">
+                    <option th:each="c : ${countries}" th:value="${c.id}" th:text="${c.name}">Страна</option>
+                </select>
+                <a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/countries/add}">Добавить страну</a>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Создать</button>
+        <a class="btn btn-secondary" th:href="@{/books}">Отмена</a>
+    </form>
+
+    <form th:if="${book.id} != 0" th:action="@{/books/edit/{id}(id=${book.id})}" method="post" th:object="${book}">
+        <input type="hidden" th:field="*{id}" />
+        <div class="mb-3">
+            <label class="form-label">Название</label>
+            <input type="text" th:field="*{title}" class="form-control" />
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Страниц</label>
+            <input type="number" th:field="*{pages}" class="form-control" />
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('pages')}" th:errors="*{pages}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Автор</label>
+            <div class="d-flex align-items-center">
+                <select th:field="*{author.id}" class="form-select">
+                    <option th:each="a : ${authors}" th:value="${a.id}" th:text="${a.surname + ' ' + a.name}" th:selected="${book.author != null and book.author.id == a.id}">Автор</option>
+                </select>
+                <a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/authors/add}">Добавить автора</a>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Жанр</label>
+            <div class="d-flex align-items-center">
+                <select th:field="*{genre.id}" class="form-select">
+                    <option th:each="g : ${genres}" th:value="${g.id}" th:text="${g.name}" th:selected="${book.genre != null and book.genre.id == g.id}">Жанр</option>
+                </select>
+                <a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/genres/add}">Добавить жанр</a>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Год</label>
+            <div class="d-flex align-items-center">
+                <select th:field="*{year.id}" class="form-select">
+                    <option th:each="y : ${years}" th:value="${y.id}" th:text="${y.value}" th:selected="${book.year != null and book.year.id == y.id}">Год</option>
+                </select>
+                <a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/years/add}">Добавить год</a>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Страна</label>
+            <div class="d-flex align-items-center">
+                <select th:field="*{country.id}" class="form-select">
+                    <option th:each="c : ${countries}" th:value="${c.id}" th:text="${c.name}" th:selected="${book.country != null and book.country.id == c.id}">Страна</option>
+                </select>
+                <a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/countries/add}">Добавить страну</a>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+        <a class="btn btn-secondary" th:href="@{/books}">Отмена</a>
+    </form>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

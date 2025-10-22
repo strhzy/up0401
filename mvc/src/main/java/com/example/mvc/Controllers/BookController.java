@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Controller
 @RequestMapping("/books")
-@Validated
+@Valid
 public class BookController {
     private final List<Book> books = new ArrayList<>();
     private final AtomicLong idCounter = new AtomicLong(1);
@@ -23,7 +23,6 @@ public class BookController {
     @GetMapping("/")
     public String getAllBooks(
             @RequestParam(required = false) String q,
-            @RequestParam(required = false) String filter,
             @RequestParam(required = false) String sort,
             Model model) {
         List<Book> result = new ArrayList<>(books);
@@ -44,46 +43,6 @@ public class BookController {
                 } catch (NumberFormatException ignored) {
                 }
                 return false;
-            }).collect(Collectors.toList());
-        } else if (filter != null && !filter.trim().isEmpty()) {
-            Map<String, String> filters = Arrays.stream(filter.split(","))
-                    .map(String::trim)
-                    .map(s -> s.split(":", 2))
-                    .filter(arr -> arr.length == 2)
-                    .collect(Collectors.toMap(arr -> arr[0].trim(), arr -> arr[1].trim()));
-
-            result = result.stream().filter(b -> {
-                for (Map.Entry<String, String> e : filters.entrySet()) {
-                    String key = e.getKey();
-                    String val = e.getValue();
-                    boolean match;
-                    switch (key) {
-                        case "title":
-                            match = b.getTitle() != null && b.getTitle().toLowerCase().contains(val.toLowerCase());
-                            break;
-                        case "author_id":
-                            try {
-                                Long aid = Long.parseLong(val);
-                                match = Objects.equals(b.getAuthor_id(), aid);
-                            } catch (NumberFormatException ex) {
-                                match = false;
-                            }
-                            break;
-                        case "pageCount":
-                            try {
-                                Integer pc = Integer.parseInt(val);
-                                match = Objects.equals(b.getPageCount(), pc);
-                            } catch (NumberFormatException ex) {
-                                match = false;
-                            }
-                            break;
-                        default:
-                            // игнорируем неизвестные поля
-                            match = true;
-                    }
-                    if (!match) return false;
-                }
-                return true;
             }).collect(Collectors.toList());
         }
 
