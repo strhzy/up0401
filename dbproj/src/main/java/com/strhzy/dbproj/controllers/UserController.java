@@ -51,6 +51,14 @@ public class UserController {
             cookie.setHttpOnly(false);
             response.addCookie(cookie);
 
+            // Добавляем cookie с ролью для фронтенда
+            String role = (user.getRole() == null || user.getRole().isBlank()) ? "USER" : user.getRole();
+            Cookie roleCookie = new Cookie("role", role);
+            roleCookie.setPath("/");
+            roleCookie.setMaxAge(7 * 24 * 60 * 60);
+            roleCookie.setHttpOnly(false);
+            response.addCookie(roleCookie);
+
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
             return "login";

@@ -15,35 +15,36 @@
                     <li class="nav-item"><a class="nav-link" th:href="@{/genres}">Жанры</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/countries}">Страны</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/years}">Года</a></li>
+                    <li class="nav-item" id="admin-panel-link" style="display:none;"><a class="nav-link" th:href="@{/admin}">Панель</a></li>
                 </ul>
 
                 <div class="d-flex align-items-center">
-                    <div class="btn-group me-3">
+                    <div class="btn-group me-3" id="add-dropdown-wrapper">
                         <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                                aria-expanded="false" id="add-dropdown-button">
                             <span class="visually-hidden">Добавить</span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" th:href="@{/books/add}">Книгу</a></li>
-                            <li><a class="dropdown-item" th:href="@{/authors/add}">Автора</a></li>
-                            <li><a class="dropdown-item" th:href="@{/genres/add}">Жанр</a></li>
-                            <li><a class="dropdown-item" th:href="@{/countries/add}">Страну</a></li>
-                            <li><a class="dropdown-item" th:href="@{/years/add}">Год</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" id="add-dropdown">
+                            <li><a class="dropdown-item" th:href="@{/books/add}" data-roles="ADMIN,MANAGER">Книгу</a></li>
+                            <li><a class="dropdown-item" th:href="@{/authors/add}" data-roles="ADMIN">Автора</a></li>
+                            <li><a class="dropdown-item" th:href="@{/genres/add}" data-roles="ADMIN">Жанр</a></li>
+                            <li><a class="dropdown-item" th:href="@{/countries/add}" data-roles="ADMIN">Страну</a></li>
+                            <li><a class="dropdown-item" th:href="@{/years/add}" data-roles="ADMIN">Год</a></li>
                         </ul>
                     </div>
 
                     <div class="d-flex align-items-center ms-auto">
-                        <span id="auth-buttons">
+                        <div id="auth-buttons">
                             <a class="btn btn-outline-light me-2" th:href="@{/auth/login}">Вход</a>
                             <a class="btn btn-outline-info" th:href="@{/auth/register}">Регистрация</a>
-                        </span>
+                        </div>
 
-                        <span id="user-info" class="text-light me-2" style="display:none;">
+                        <div id="user-info" class="text-light me-2" style="display:none;">
                             Привет, <b id="username"></b>!
                             <form th:action="@{/auth/logout}" method="post" style="display:inline">
                                 <button type="submit" class="btn btn-outline-danger">Выход</button>
                             </form>
-                        </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,11 +56,54 @@
             const parts = value.split(`; ${name}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
+
         const username = getCookie("username");
+        const role = getCookie("role") || null;
         if (username) {
             document.getElementById("username").innerText = username;
             document.getElementById("user-info").style.display = "inline";
             document.getElementById("auth-buttons").style.display = "none";
         }
+
+        (function() {
+            const dropdown = document.getElementById('add-dropdown');
+            const wrapper = document.getElementById('add-dropdown-wrapper');
+            if (!dropdown || !wrapper) return;
+
+            const items = dropdown.querySelectorAll('.dropdown-item');
+            let anyVisible = false;
+
+            items.forEach(item => {
+                const rolesAttr = item.getAttribute('data-roles');
+                if (!rolesAttr) {
+                    item.style.display = 'none';
+                    return;
+                }
+                const allowed = rolesAttr.split(',').map(s => s.trim().toUpperCase());
+                if (role && allowed.includes(role.toUpperCase())) {
+                    item.style.display = '';
+                    anyVisible = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (!anyVisible) {
+                wrapper.style.display = 'none';
+            } else {
+                wrapper.style.display = '';
+            }
+        })();
+
+        (function() {
+            const adminLink = document.getElementById('admin-panel-link');
+            if (!adminLink) return;
+            const allowed = ['ADMIN', 'MANAGER'];
+            if (role && allowed.includes(role.toUpperCase())) {
+                adminLink.style.display = '';
+            } else {
+                adminLink.style.display = 'none';
+            }
+        })();
     </script>
 </header>

@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -24,10 +27,12 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
+        String role = (user.getRole() == null || user.getRole().isBlank()) ? "USER" : user.getRole();
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .roles("USER")
+                .roles(role)
                 .build();
     }
 
@@ -49,5 +54,25 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Неверный пароль");
         }
         return user;
+    }
+
+    public User updateUserRole(String username, String newRole) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+        user.setRole(newRole);
+        return userRepository.save(user);
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    // Новый метод: получить всех пользователей
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }
