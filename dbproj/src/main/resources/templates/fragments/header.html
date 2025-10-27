@@ -1,0 +1,65 @@
+<header th:fragment="header(user)">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">Библиотека</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                    aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/books}">Книги</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/authors}">Авторы</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/genres}">Жанры</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/countries}">Страны</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/years}">Года</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <div class="btn-group me-3">
+                        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            <span class="visually-hidden">Добавить</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" th:href="@{/books/add}">Книгу</a></li>
+                            <li><a class="dropdown-item" th:href="@{/authors/add}">Автора</a></li>
+                            <li><a class="dropdown-item" th:href="@{/genres/add}">Жанр</a></li>
+                            <li><a class="dropdown-item" th:href="@{/countries/add}">Страну</a></li>
+                            <li><a class="dropdown-item" th:href="@{/years/add}">Год</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex align-items-center ms-auto">
+                        <span id="auth-buttons">
+                            <a class="btn btn-outline-light me-2" th:href="@{/auth/login}">Вход</a>
+                            <a class="btn btn-outline-info" th:href="@{/auth/register}">Регистрация</a>
+                        </span>
+
+                        <span id="user-info" class="text-light me-2" style="display:none;">
+                            Привет, <b id="username"></b>!
+                            <form th:action="@{/auth/logout}" method="post" style="display:inline">
+                                <button type="submit" class="btn btn-outline-danger">Выход</button>
+                            </form>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        const username = getCookie("username");
+        if (username) {
+            document.getElementById("username").innerText = username;
+            document.getElementById("user-info").style.display = "inline";
+            document.getElementById("auth-buttons").style.display = "none";
+        }
+    </script>
+</header>
