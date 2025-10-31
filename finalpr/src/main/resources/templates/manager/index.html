@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(title='Панель менеджера')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container mt-4">
+    <h1>Панель менеджера</h1>
+    <p>Управление товарами, заказами, категориями и т.д. (без доступа к пользователям).</p>
+
+    <div class="row mt-3">
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/manager/products}" class="btn btn-primary btn-block">Товары</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/manager/categories}" class="btn btn-secondary btn-block">Категории</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/manager/manufacturers}" class="btn btn-info btn-block">Производители</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/manager/orders}" class="btn btn-warning btn-block">Заказы</a>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/manager/reviews}" class="btn btn-success btn-block">Отзывы</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/manager/stocks}" class="btn btn-dark btn-block">Склад</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/manager/order-items}" class="btn btn-outline-primary btn-block">Позиции заказа</a>
+        </div>
+    </div>
+
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

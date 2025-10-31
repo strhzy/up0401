@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -41,5 +44,5 @@ public class Review {
 
     @NotNull(message = "Дата создания обязательна")
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 }

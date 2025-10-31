@@ -46,11 +46,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/auth/login", "/auth/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers(HttpMethod.GET,
-                                "/books/**",
-                                "/authors/**",
-                                "/genres/**",
-                                "/countries/**",
-                                "/years/**")
+                                "/books",
+                                "/authors",
+                                "/genres",
+                                "/countries",
+                                "/years")
                             .hasAnyRole("USER", "MANAGER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/books/add", "/books/edit/**")
                             .hasAnyRole("MANAGER", "ADMIN")

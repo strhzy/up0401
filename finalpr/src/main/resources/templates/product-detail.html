@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${product.name} + ' - TechStore'">Товар - TechStore</title>
+  <th:block th:insert="fragments/head"></th:block>
+</head>
+<body>
+<th:block th:insert="fragments/navbar"></th:block>
+
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+      <li class="breadcrumb-item"><a th:href="@{/products}">Товары</a></li>
+      <li class="breadcrumb-item active" th:text="${product.name}">Товар</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-6">
+      <img th:src="@{/images/product-placeholder.png}" class="img-fluid rounded" alt="Product">
+    </div>
+    <div class="col-md-6">
+      <h1 th:text="${product.name}">Название товара</h1>
+      <p class="text-muted" th:text="${product.description}">Описание товара</p>
+
+      <div class="mb-3">
+        <span class="h2 text-primary" th:text="'₽' + ${#numbers.formatDecimal(product.price, 1, 2)}">₽0</span>
+      </div>
+
+      <div class="mb-3">
+        <span class="badge bg-info" th:text="'Категория: ' + ${categoryName}">Категория</span>
+        <span class="badge bg-secondary ms-2" th:text="'Производитель: ' + ${manufacturerName}">Производитель</span>
+      </div>
+
+      <form th:action="@{/cart/add}" method="post" class="d-grid gap-2 d-md-flex" style="align-items:center;">
+        <input type="hidden" name="productId" th:value="${product.id}" />
+        <div class="input-group me-2" style="width: 140px;">
+          <button class="btn btn-outline-secondary" type="button" onclick="var q=this.parentNode.querySelector('input[name=quantity]'); if(+q.value>1) q.value=+q.value-1;">-</button>
+          <input type="number" class="form-control text-center" name="quantity" value="1" min="1">
+          <button class="btn btn-outline-secondary" type="button" onclick="var q=this.parentNode.querySelector('input[name=quantity]'); q.value=+q.value+1;">+</button>
+        </div>
+        <button class="btn btn-primary flex-grow-1" type="submit" th:disabled="${!isAuthenticated}">
+          <i class="fas fa-cart-plus"></i> Добавить в корзину
+        </button>
+      </form>
+
+      <div class="mt-4">
+        <h5>Характеристики</h5>
+        <ul>
+          <li>Высокое качество</li>
+          <li>Гарантия 1 год</li>
+          <li>Бесплатная доставка</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Отзывы -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3>Отзывы</h3>
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Список отзывов -->
+          <div th:if="${!#lists.isEmpty(reviews)}">
+            <div th:each="rev : ${reviews}" class="mb-3">
+              <div class="pb-2 mb-2 border-bottom">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <div>
+                      <!-- Рейтинг: звёзды -->
+                      <span th:each="i : ${#numbers.sequence(1, rev.rating)}" class="text-warning">&#9733;</span>
+                      <span th:each="i : ${#numbers.sequence(rev.rating + 1, 5)}" class="text-muted">&#9734;</span>
+                      <small class="text-muted ms-2" th:text="${rev.rating + ' / 5'}">5 / 5</small>
+                    </div>
+                  </div>
+                  <small class="text-muted" th:text="${rev.createdAt}"></small>
+                </div>
+
+                <p class="mt-2" th:text="${rev.comment}">Текст отзыва</p>
+              </div>
+            </div>
+          </div>
+
+          <div th:if="${#lists.isEmpty(reviews)}">
+            <p class="text-muted">Отзывов пока нет. Будьте первым!</p>
+          </div>
+
+          <!-- Форма отправки отзыва -->
+          <div th:if="${isAuthenticated}">
+            <form th:action="@{/products/{id}/reviews(id=${product.id})}" method="post">
+              <div class="mb-3">
+                <label for="rating" class="form-label">Оценка</label>
+                <select id="rating" name="rating" class="form-select" required>
+                  <option value="5">5 — Отлично</option>
+                  <option value="4">4 — Хорошо</option>
+                  <option value="3">3 — Нормально</option>
+                  <option value="2">2 — Плохо</option>
+                  <option value="1">1 — Ужасно</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="comment" class="form-label">Комментарий</label>
+                <textarea id="comment" name="comment" class="form-control" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-outline-primary">Отправить отзыв</button>
+            </form>
+          </div>
+
+          <div th:unless="${isAuthenticated}">
+            <p class="text-muted">Чтобы оставить отзыв, <a th:href="@{/login}">войдите в аккаунт</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block th:insert="fragments/footer"></th:block>
+</body>
+</html>

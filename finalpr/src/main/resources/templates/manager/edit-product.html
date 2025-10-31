@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(title='Редактировать товар')">
+    <title>Редактировать товар - TechStore</title>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container mt-4">
+    <h1>Редактировать товар</h1>
+    <a th:href="@{/manager/products}" class="btn btn-secondary mb-3">Назад к товарам</a>
+
+    <form th:action="@{/manager/products/save}" method="post">
+        <input type="hidden" name="id" th:value="${product.id}" />
+        <div class="mb-3">
+            <label class="form-label" for="name">Название</label>
+            <input id="name" class="form-control" name="name" th:value="${product.name}" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="description">Описание</label>
+            <textarea id="description" class="form-control" name="description" th:text="${product.description}"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="price">Цена</label>
+            <input id="price" type="number" step="0.01" class="form-control" name="price" th:value="${product.price}" />
+        </div>
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+    </form>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

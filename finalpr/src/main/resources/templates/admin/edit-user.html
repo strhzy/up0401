@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(title='Редактировать пользователя')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container mt-4">
+    <h1>Редактировать пользователя</h1>
+    <a th:href="@{/admin/users}" class="btn btn-secondary mb-3">Назад к списку</a>
+
+    <form th:action="@{/admin/users/edit}" method="post" class="row g-3">
+        <input type="hidden" name="id" th:value="${user.id}" />
+
+        <div class="col-md-6">
+            <label class="form-label">Имя</label>
+            <input class="form-control" name="name" th:value="${user.name}" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Логин</label>
+            <input class="form-control" name="username" th:value="${user.username}" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Телефон</label>
+            <input class="form-control" name="phone" th:value="${user.phone}" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Адрес</label>
+            <input class="form-control" name="address" th:value="${user.address}" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Роль</label>
+            <select class="form-select" name="role">
+                <option th:selected="${user.role == 'USER'}" value="USER">USER</option>
+                <option th:selected="${user.role == 'MANAGER'}" value="MANAGER">MANAGER</option>
+                <option th:selected="${user.role == 'ADMIN'}" value="ADMIN">ADMIN</option>
+            </select>
+        </div>
+
+        <div class="col-12 mt-3">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+            <a th:href="@{/admin/users}" class="btn btn-link">Отмена</a>
+        </div>
+    </form>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

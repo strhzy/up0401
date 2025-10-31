@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регистрация - TechStore</title>
+  <th:block th:insert="fragments/head"></th:block>
+</head>
+<body>
+<th:block th:insert="fragments/navbar"></th:block>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="text-center mb-0">Регистрация</h4>
+        </div>
+        <div class="card-body">
+          <!-- Сообщения об ошибках/успехе -->
+          <th:block th:if="${success}">
+            <div class="alert alert-success" th:text="${success}"></div>
+          </th:block>
+          <th:block th:if="${error}">
+            <div class="alert alert-danger" th:text="${error}"></div>
+          </th:block>
+
+          <form th:action="@{/register}" method="post">
+            <div class="mb-3">
+              <label for="username" class="form-label">Логин</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Пароль</label>
+              <input type="password" class="form-control" id="password" name="password" required minlength="6">
+              <div class="form-text">Пароль должен содержать минимум 6 символов</div>
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            </div>
+          </form>
+
+          <div class="text-center mt-3">
+            <p>Уже есть аккаунт? <a th:href="@{/login}">Войдите</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block th:insert="fragments/footer"></th:block>
+</body>
+</html>

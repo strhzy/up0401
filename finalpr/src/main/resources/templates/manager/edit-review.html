@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(title='Отзыв')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container mt-4">
+    <h1 th:text="${title}">Отзыв</h1>
+    <form th:action="@{/manager/reviews/save}" method="post" class="row g-3">
+        <input type="hidden" name="id" th:value="${review.id}" />
+        <div class="col-md-4">
+            <label class="form-label">Товар</label>
+            <select class="form-select" name="productId">
+                <option th:value="" th:text="'-- Выберите товар --'"></option>
+                <option th:each="p : ${products}"
+                        th:value="${p.id}"
+                        th:text="${p.name}"
+                        th:selected="${p.id == review.productId}"></option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Клиент</label>
+            <select class="form-select" name="customerId">
+                <option th:value="" th:text="'-- Выберите клиента --'"></option>
+                <option th:each="c : ${customers}"
+                        th:value="${c.id}"
+                        th:text="${c.username}"
+                        th:selected="${c.id == review.customerId}"></option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Рейтинг</label>
+            <input type="number" class="form-control" name="rating" th:value="${review.rating}" min="1" max="5" />
+        </div>
+        <div class="col-12">
+            <label class="form-label">Комментарий</label>
+            <textarea class="form-control" name="comment" th:text="${review.comment}"></textarea>
+        </div>
+        <div class="col-12 mt-3">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+            <a th:href="@{/manager/reviews}" class="btn btn-link">Отмена</a>
+        </div>
+    </form>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

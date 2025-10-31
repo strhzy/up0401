@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(title='Категория')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container mt-4">
+    <h1 th:text="${title}">Категория</h1>
+    <form th:action="@{/manager/categories/save}" method="post" class="row g-3">
+        <input type="hidden" name="id" th:value="${category.id}" />
+        <div class="col-md-6">
+            <label class="form-label">Название</label>
+            <input class="form-control" name="name" th:value="${category.name}" />
+        </div>
+        <div class="col-12">
+            <label class="form-label">Описание</label>
+            <textarea class="form-control" name="description" th:text="${category.description}"></textarea>
+        </div>
+        <div class="col-12 mt-3">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+            <a th:href="@{/manager/categories}" class="btn btn-link">Отмена</a>
+        </div>
+    </form>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
+

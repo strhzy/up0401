@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(title='Складская позиция')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container mt-4">
+    <h1 th:text="${title}">Складская позиция</h1>
+    <form th:action="@{/manager/stocks/save}" method="post" class="row g-3">
+        <input type="hidden" name="id" th:value="${stock.id}" />
+        <div class="col-md-6">
+            <label class="form-label">Товар</label>
+            <select class="form-select" name="productId">
+                <option th:value="" th:text="'-- Выберите товар --'"></option>
+                <option th:each="p : ${products}"
+                        th:value="${p.id}"
+                        th:text="${p.name}"
+                        th:selected="${p.id == stock.productId}"></option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Количество</label>
+            <input type="number" class="form-control" name="quantity" th:value="${stock.quantity}" />
+        </div>
+        <div class="col-12 mt-3">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+            <a th:href="@{/manager/stocks}" class="btn btn-link">Отмена</a>
+        </div>
+    </form>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

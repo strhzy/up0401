@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профиль - TechStore</title>
+  <th:block th:insert="fragments/head"></th:block>
+</head>
+<body>
+<th:block th:insert="fragments/navbar"></th:block>
+
+<div class="container mt-4">
+  <h2>Личный кабинет</h2>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fas fa-user-circle fa-5x text-muted mb-3"></i>
+          <h4 th:text="${username}">Пользователь</h4>
+          <p class="text-muted">Клиент TechStore</p>
+        </div>
+      </div>
+
+      <div class="list-group mt-3">
+        <a th:href="@{/profile(tab='profile')}" th:classappend="${activeTab == 'profile'} ? ' active' : ''" class="list-group-item list-group-item-action">
+          <i class="fas fa-user me-2"></i>Профиль
+        </a>
+        <a th:href="@{/profile(tab='orders')}" th:classappend="${activeTab == 'orders'} ? ' active' : ''" class="list-group-item list-group-item-action">
+          <i class="fas fa-shopping-bag me-2"></i>Мои заказы
+        </a>
+        <form th:action="@{/logout}" method="post" class="list-group-item">
+          <button type="submit" class="btn btn-link text-danger p-0">
+            <i class="fas fa-sign-out-alt me-2"></i>Выйти
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div th:if="${activeTab == 'profile'}">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Информация о профиле</h5>
+          </div>
+          <div class="card-body">
+            <form th:action="@{/profile}" th:object="${customer}" method="post">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Имя</label>
+                  <input type="text" class="form-control" th:field="*{name}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Логин</label>
+                  <input type="text" class="form-control" th:field="*{username}">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Телефон</label>
+                <input type="tel" class="form-control" th:field="*{phone}">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Адрес</label>
+                <textarea class="form-control" rows="3" th:field="*{address}"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${activeTab == 'orders'}">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Мои заказы</h5>
+          </div>
+          <div class="card-body">
+            <div th:if="${#lists.isEmpty(orders)}">
+              <p class="text-muted">У вас пока нет заказов</p>
+              <a th:href="@{/products}" class="btn btn-outline-primary">Сделать первый заказ</a>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(orders)}">
+              <div th:each="ord : ${orders}" class="mb-3">
+                <div class="border rounded p-3">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <strong th:text="'Заказ #' + ${ord.id}">Заказ #1</strong>
+                      <div class="text-muted small" th:text="${#temporals.format(ord.orderDate, 'dd.MM.yyyy HH:mm')}">01.01.2025</div>
+                    </div>
+                    <div class="text-end">
+                      <div th:text="${ord.status}">NEW</div>
+                      <div class="fw-bold" th:text="'₽' + ${#numbers.formatDecimal(ord.totalAmount,1,2)}">₽0</div>
+                    </div>
+                  </div>
+                  <a th:href="@{/orders/{id}(id=${ord.id})}" class="btn btn-sm btn-link mt-2">Посмотреть детали</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<th:block th:insert="fragments/footer"></th:block>
+</body>
+</html>
